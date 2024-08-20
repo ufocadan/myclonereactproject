@@ -1,5 +1,4 @@
 import React from 'react';
-import './HeroSection.css';
 
 const HeroSection = () => {
   return (
@@ -7,6 +6,9 @@ const HeroSection = () => {
       <div className="container">
         <h1>Sigortada Güvenin Adresi</h1>
         <p>Doğru Ürün. İyi Fiyat. 7/24 Hizmet.</p>
+        <div className="text-center my-4">
+          <a href="#" className="btn btn-link">Tüm Ürünleri Gör</a>
+        </div>
       </div>
     </section>
   );
