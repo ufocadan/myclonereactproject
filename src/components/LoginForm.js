@@ -2,47 +2,29 @@ import React, { useState } from 'react';
 import './LoginForm.css'; // Import any CSS styles if needed
 
 function LoginForm() {
-    // State to handle input values
-    const [identityNo, setIdentityNo] = useState('');
-    const [phone, setPhone] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [tcOrTaxNo, setTcOrTaxNo] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
 
-    const handleIdentityNoChange = (e) => setIdentityNo(e.target.value);
-    const handlePhoneChange = (e) => setPhone(e.target.value);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    // Function to handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        // Replace with your API endpoint
-        const apiUrl = 'https://api.example.com/api/v1/users/123';
+    const apiUrl = `https://jsonplaceholder.typicode.com/posts?userId=${tcOrTaxNo}&phone=${phone}`;
 
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    identityNo,
-                    phone,
-                }),
-            });
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
 
-            const data = await response.json();
+      // Display the JSON response in the message box
+      setMessage(JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
-            if (response.ok) {
-                // Handle success (e.g., redirect to another page or update UI)
-                console.log('Login successful', data);
-            } else {
-                // Handle errors (e.g., display an error message)
-                setErrorMessage(data.message || 'Login failed. Please try again.');
-            }
-        } catch (error) {
-            // Handle network errors
-            setErrorMessage('An error occurred. Please try again later.');
-            console.error('Error:', error);
-        }
-    };
+  const goToMainPage = () => {
+    window.location.href = 'index.html';
+  };
 
     return (
         <div className="login-register-form">
@@ -56,50 +38,64 @@ function LoginForm() {
                     <div>Giriş yapmak veya üye olmak için aşağıdaki alanları doldurabilirsin.</div>
                 </div>
                 <div className="input tc-tax-input mb-4">
-                    <div className="input__wrapper">
-                        <div className="input__area">
-                            <div className="input__area__inner">
-                                <label htmlFor="identityNoInput" className="input__label">TC Kimlik No veya Vergi No</label>
-                                <input
-                                    id="identityNoInput"
-                                    maxLength="11"
-                                    minLength="10"
-                                    type="tel"
-                                    name="tc-or-tax-no-input"
-                                    autoComplete="off"
-                                    value={identityNo}
-                                    onChange={(e) => setIdentityNo(e.target.value)}
-                                    className="input__native"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="input phone-input mb-4">
-                    <div className="input__wrapper">
-                        <div className="input__area">
-                            <div className="input__area__inner">
-                                <label htmlFor="phoneInput" className="input__label">Cep Telefonu</label>
-                                <input
-                                    type="tel"
-                                    name="phone"
-                                    autoComplete="tel"
-                                    id="phoneInput"
-                                    value={phone}
-                                    onChange={(e) => setPhone(e.target.value)}
-                                    className="input__native"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" className="ml-auto login-register-form__submitButton button app-button app-button--default app-button--sm">
-                    <span className="app-button__title">
-                        Giriş Yap / Üye Ol
-                    </span>
-                </button>
-            </form>
+          <div className="input__wrapper">
+            <div className="input__area">
+              <div className="input__area__inner">
+                <label htmlFor="identityNoInput" className="input__label">TC Kimlik No veya Vergi No</label>
+                <input
+                  id="identityNoInput"
+                  maxLength="11"
+                  minLength="1"
+                  type="tel"
+                  name="tc-or-tax-no-input"
+                  autocomplete="off"
+                  value={tcOrTaxNo}
+                  onChange={(e) => setTcOrTaxNo(e.target.value)}
+                  className="input__native"
+                />
+              </div>
+            </div>
+          </div>
         </div>
+        <div className="input phone-input">
+          <div className="input__wrapper">
+            <div className="input__area">
+              <div className="input__area__inner">
+                <label htmlFor="phoneInput" className="input__label">Cep Telefonu</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  autocomplete="tel"
+                  id="phoneInput"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="input__native mb-4"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" className="ml-auto login-register-form__submitButton button app-button app-button--default app-button--sm">
+          Giriş Yap / Üye Ol
+        </button>
+      </form>
+      
+      {/* Message Box */}
+      <div id="messageBox" style={{
+        display: message ? 'block' : 'none',
+        height: '200px', // Set a fixed height
+        width: '500px', // Set a fixed width
+        overflowY: 'scroll', // Enable vertical scrolling
+        overflowX: 'hidden', // Disable horizontal scrolling
+        border: '1px solid #ccc', // Optional: Add a border for better visibility
+        padding: '10px', // Add some padding
+        marginTop: '20px' // Add some space above the box
+      }}>
+        <pre>{message}</pre>
+      </div>
+
+      <button onClick={goToMainPage}>Ana Sayfaya Dön</button>
+    </div>
     );
 }
 
